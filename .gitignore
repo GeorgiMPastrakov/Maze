@@ -1,3 +1,4 @@
 maze
 *.o
 *.dSYM/
+.DS_Store
