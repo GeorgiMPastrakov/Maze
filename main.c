@@ -1,10 +1,21 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include "maze.h"
 
 static void read_line(char *buffer, int size) {
     if (fgets(buffer, size, stdin) == NULL) {
         buffer[0] = '\0';
+    }
+}
+
+static void prompt_string(const char *label, char *buffer, int size) {
+    int len;
+    printf("%s", label);
+    read_line(buffer, size);
+    len = (int)strlen(buffer);
+    while (len > 0 && (buffer[len - 1] == '\n' || buffer[len - 1] == '\r')) {
+        buffer[--len] = '\0';
     }
 }
 
@@ -44,6 +55,29 @@ static void handle_generate(Maze *maze, int *has_maze) {
     draw_maze(maze);
 }
 
+static void handle_load(Maze *maze, int *has_maze) {
+    char name[256];
+    prompt_string("Filename: ", name, sizeof name);
+    if (read_maze(maze, name)) {
+        *has_maze = 1;
+        clear_screen();
+        draw_maze(maze);
+    } else {
+        printf("Could not read a valid maze from that file\n");
+    }
+}
+
+static void handle_save(const Maze *maze, int has_maze) {
+    char name[256];
+    prompt_string("Filename: ", name, sizeof name);
+    if (write_maze(maze, name)) {
+        printf("Maze saved\n");
+    } else {
+        printf("Could not write to that file\n");
+    }
+    (void)has_maze;
+}
+
 int main(void) {
     Maze maze;
     int has_maze = 0;
@@ -55,8 +89,10 @@ int main(void) {
                 handle_generate(&maze, &has_maze);
                 break;
             case 2:
+                handle_load(&maze, &has_maze);
                 break;
             case 3:
+                handle_save(&maze, has_maze);
                 break;
             case 4:
                 break;
