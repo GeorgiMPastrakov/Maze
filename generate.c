@@ -51,6 +51,20 @@ static void carve(Maze *maze, int row, int col, Rng *rng) {
     }
 }
 
+static void open_exit(Maze *maze) {
+    int last_row = maze->height - 1;
+    int last_col = maze->width - 1;
+    int even_row = (last_row % 2 == 0) ? last_row : last_row - 1;
+    int even_col = (last_col % 2 == 0) ? last_col : last_col - 1;
+    int row, col;
+    for (col = even_col; col <= last_col; col++) {
+        maze->cells[even_row][col] = EMPTY;
+    }
+    for (row = even_row; row <= last_row; row++) {
+        maze->cells[row][last_col] = EMPTY;
+    }
+}
+
 void generate_maze(Maze *maze, int width, int height, unsigned seed) {
     Rng rng;
     rng.state = seed != 0u ? seed : (unsigned)time(NULL);
@@ -58,5 +72,6 @@ void generate_maze(Maze *maze, int width, int height, unsigned seed) {
     maze->height = height;
     fill_walls(maze);
     carve(maze, 0, 0, &rng);
-    maze->cells[height - 1][width - 1] = EMPTY;
+    maze->cells[0][0] = EMPTY;
+    open_exit(maze);
 }
