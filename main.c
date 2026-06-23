@@ -55,6 +55,15 @@ static void handle_generate(Maze *maze, int *has_maze) {
     draw_maze(maze);
 }
 
+static void handle_solve(const Maze *maze) {
+    int algorithm = prompt_int("Algorithm (1 = DFS, 2 = BFS): ");
+    if (algorithm == 2) {
+        solve_bfs(maze);
+    } else {
+        solve_dfs(maze);
+    }
+}
+
 static void handle_load(Maze *maze, int *has_maze) {
     char name[256];
     prompt_string("Filename: ", name, sizeof name);
@@ -111,6 +120,11 @@ int main(void) {
                 }
                 break;
             case 5:
+                if (has_maze) {
+                    handle_solve(&maze);
+                } else {
+                    printf("Generate or load a maze first\n");
+                }
                 break;
             case 6:
                 running = 0;
