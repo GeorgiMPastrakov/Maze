@@ -65,11 +65,21 @@ static void open_exit(Maze *maze) {
     }
 }
 
+static int clamp(int value, int low, int high) {
+    if (value < low) {
+        return low;
+    }
+    if (value > high) {
+        return high;
+    }
+    return value;
+}
+
 void generate_maze(Maze *maze, int width, int height, unsigned seed) {
     Rng rng;
     rng.state = seed != 0u ? seed : (unsigned)time(NULL);
-    maze->width = width;
-    maze->height = height;
+    maze->width = clamp(width, MAZE_MIN, MAZE_MAX_W);
+    maze->height = clamp(height, MAZE_MIN, MAZE_MAX_H);
     fill_walls(maze);
     carve(maze, 0, 0, &rng);
     maze->cells[0][0] = EMPTY;
