@@ -63,11 +63,29 @@ static void handle_generate(Maze *maze, int *has_maze) {
 }
 
 static void handle_solve(const Maze *maze) {
-    int algorithm = prompt_int("Algorithm (1 = DFS, 2 = BFS): ");
-    if (algorithm == 2) {
-        solve_bfs(maze);
-    } else {
-        solve_dfs(maze);
+    int algorithm;
+    printf("1. Depth-first search\n");
+    printf("2. Breadth-first search (shortest path)\n");
+    printf("3. A* search (shortest path)\n");
+    printf("4. Right-hand wall follower\n");
+    printf("5. Compare all algorithms\n");
+    algorithm = prompt_int("Algorithm: ");
+    switch (algorithm) {
+        case 2:
+            solve_bfs(maze);
+            break;
+        case 3:
+            solve_astar(maze);
+            break;
+        case 4:
+            solve_wall_follower(maze);
+            break;
+        case 5:
+            solve_compare(maze);
+            break;
+        default:
+            solve_dfs(maze);
+            break;
     }
     pause_enter();
 }

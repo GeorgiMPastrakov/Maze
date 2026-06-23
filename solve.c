@@ -364,3 +364,18 @@ void solve_astar(const Maze *maze) {
 void solve_wall_follower(const Maze *maze) {
     report("Right-hand wall follower", run_wall_follower(maze, 1));
 }
+
+void solve_compare(const Maze *maze) {
+    SolveStats dfs = run_dfs(maze, 0);
+    SolveStats bfs = run_bfs(maze, 0);
+    SolveStats astar = run_astar(maze, 0);
+    SolveStats wall = run_wall_follower(maze, 0);
+    clear_screen();
+    draw_maze(maze);
+    printf("\n%-28s %-10s %-10s\n", "Algorithm", "Explored", "Path");
+    printf("%-28s %-10d %-10d\n", "DFS (depth-first)", dfs.explored, dfs.path_length);
+    printf("%-28s %-10d %-10d\n", "BFS (shortest path)", bfs.explored, bfs.path_length);
+    printf("%-28s %-10d %-10d\n", "A* (shortest path)", astar.explored, astar.path_length);
+    printf("%-28s %-10d %-10d\n", "Right-hand wall follower",
+           wall.explored, wall.path_length);
+}
