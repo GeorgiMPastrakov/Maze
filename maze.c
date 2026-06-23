@@ -23,3 +23,17 @@ void draw_maze(const Maze *maze) {
         putchar('\n');
     }
 }
+
+void draw_maze_marked(const Maze *maze, int row, int col, char glyph) {
+    int r, c;
+    for (r = 0; r < maze->height; r++) {
+        for (c = 0; c < maze->width; c++) {
+            if (r == row && c == col) {
+                putchar(glyph);
+            } else {
+                putchar(maze->cells[r][c]);
+            }
+        }
+        putchar('\n');
+    }
+}
