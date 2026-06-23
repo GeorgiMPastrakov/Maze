@@ -62,3 +62,73 @@ void solve_dfs(const Maze *maze) {
     }
     printf("No path found\n");
 }
+
+static void draw_path(const Maze *maze, const char path[MAZE_MAX_H][MAZE_MAX_W]) {
+    Maze view = *maze;
+    int r, c;
+    for (r = 0; r < maze->height; r++) {
+        for (c = 0; c < maze->width; c++) {
+            if (path[r][c]) {
+                view.cells[r][c] = 'o';
+            }
+        }
+    }
+    clear_screen();
+    draw_maze(&view);
+}
+
+void solve_bfs(const Maze *maze) {
+    char visited[MAZE_MAX_H][MAZE_MAX_W];
+    char path[MAZE_MAX_H][MAZE_MAX_W];
+    int parent_row[MAZE_MAX_H][MAZE_MAX_W];
+    int parent_col[MAZE_MAX_H][MAZE_MAX_W];
+    int queue_row[CELL_COUNT];
+    int queue_col[CELL_COUNT];
+    int head = 0;
+    int tail = 0;
+    int i;
+    memset(visited, 0, sizeof visited);
+    visited[0][0] = 1;
+    parent_row[0][0] = -1;
+    parent_col[0][0] = -1;
+    queue_row[tail] = 0;
+    queue_col[tail] = 0;
+    tail++;
+    while (head < tail) {
+        int row = queue_row[head];
+        int col = queue_col[head];
+        head++;
+        animate(maze, visited, row, col);
+        if (row == maze->height - 1 && col == maze->width - 1) {
+            int r = row;
+            int c = col;
+            memset(path, 0, sizeof path);
+            while (r != -1) {
+                int previous_row = parent_row[r][c];
+                int previous_col = parent_col[r][c];
+                path[r][c] = 1;
+                r = previous_row;
+                c = previous_col;
+            }
+            draw_path(maze, path);
+            printf("Reached the goal\n");
+            return;
+        }
+        for (i = 0; i < 4; i++) {
+            int next_row = row + move_row[i];
+            int next_col = col + move_col[i];
+            if (next_row >= 0 && next_row < maze->height &&
+                next_col >= 0 && next_col < maze->width &&
+                maze->cells[next_row][next_col] == EMPTY &&
+                !visited[next_row][next_col]) {
+                visited[next_row][next_col] = 1;
+                parent_row[next_row][next_col] = row;
+                parent_col[next_row][next_col] = col;
+                queue_row[tail] = next_row;
+                queue_col[tail] = next_col;
+                tail++;
+            }
+        }
+    }
+    printf("No path found\n");
+}
