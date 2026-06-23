@@ -7,8 +7,8 @@ void clear_screen(void) {
 
 void fill_walls(Maze *maze) {
     int row, col;
-    for (row = 0; row < maze->height; row++) {
-        for (col = 0; col < maze->width; col++) {
+    for (row = 0; row < MAZE_MAX_H; row++) {
+        for (col = 0; col < MAZE_MAX_W; col++) {
             maze->cells[row][col] = WALL;
         }
     }
