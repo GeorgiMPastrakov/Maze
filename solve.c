@@ -85,7 +85,6 @@ static void trace_path(char mark[MAZE_MAX_H][MAZE_MAX_W],
 static SolveStats run_dfs(const Maze *maze, int animate) {
     char mark[MAZE_MAX_H][MAZE_MAX_W];
     char discovered[MAZE_MAX_H][MAZE_MAX_W];
-    char visited[MAZE_MAX_H][MAZE_MAX_W];
     int parent_row[MAZE_MAX_H][MAZE_MAX_W];
     int parent_col[MAZE_MAX_H][MAZE_MAX_W];
     int stack_row[CELL_COUNT];
@@ -95,20 +94,15 @@ static SolveStats run_dfs(const Maze *maze, int animate) {
     SolveStats stats = {0, 0, 0};
     memset(mark, 0, sizeof mark);
     memset(discovered, 0, sizeof discovered);
-    memset(visited, 0, sizeof visited);
-    stack_row[top] = 0;
-    stack_col[top] = 0;
+    stack_row[top] = maze->start_row;
+    stack_col[top] = maze->start_col;
     top++;
-    discovered[0][0] = 1;
-    parent_row[0][0] = -1;
-    parent_col[0][0] = -1;
+    discovered[maze->start_row][maze->start_col] = 1;
+    parent_row[maze->start_row][maze->start_col] = -1;
+    parent_col[maze->start_row][maze->start_col] = -1;
     while (top > 0) {
         int row = stack_row[--top];
         int col = stack_col[top];
-        if (visited[row][col]) {
-            continue;
-        }
-        visited[row][col] = 1;
         mark[row][col] = 'V';
         stats.explored++;
         if (animate) {
@@ -157,11 +151,11 @@ static SolveStats run_bfs(const Maze *maze, int animate) {
     SolveStats stats = {0, 0, 0};
     memset(mark, 0, sizeof mark);
     memset(visited, 0, sizeof visited);
-    visited[0][0] = 1;
-    parent_row[0][0] = -1;
-    parent_col[0][0] = -1;
-    queue_row[tail] = 0;
-    queue_col[tail] = 0;
+    visited[maze->start_row][maze->start_col] = 1;
+    parent_row[maze->start_row][maze->start_col] = -1;
+    parent_col[maze->start_row][maze->start_col] = -1;
+    queue_row[tail] = maze->start_row;
+    queue_col[tail] = maze->start_col;
     tail++;
     while (head < tail) {
         int row = queue_row[head];
@@ -221,11 +215,11 @@ static SolveStats run_astar(const Maze *maze, int animate) {
             gscore[row][col] = CELL_COUNT * 4;
         }
     }
-    gscore[0][0] = 0;
-    open_set[0][0] = 1;
-    mark[0][0] = 'F';
-    parent_row[0][0] = -1;
-    parent_col[0][0] = -1;
+    gscore[maze->start_row][maze->start_col] = 0;
+    open_set[maze->start_row][maze->start_col] = 1;
+    mark[maze->start_row][maze->start_col] = 'F';
+    parent_row[maze->start_row][maze->start_col] = -1;
+    parent_col[maze->start_row][maze->start_col] = -1;
     while (1) {
         int best_row = -1;
         int best_col = -1;
@@ -292,8 +286,8 @@ static SolveStats run_astar(const Maze *maze, int animate) {
 
 static SolveStats run_wall_follower(const Maze *maze, int animate) {
     char mark[MAZE_MAX_H][MAZE_MAX_W];
-    int row = 0;
-    int col = 0;
+    int row = maze->start_row;
+    int col = maze->start_col;
     int facing = 2;
     int goal_row = maze->goal_row;
     int goal_col = maze->goal_col;
