@@ -28,9 +28,17 @@ int read_maze(Maze *maze, const char *filename) {
     for (row = 0; row < height; row++) {
         for (col = 0; col < width; col++) {
             ch = fgetc(file);
-            maze->cells[row][col] = (ch == WALL) ? WALL : EMPTY;
+            if (ch != WALL && ch != EMPTY) {
+                fclose(file);
+                return 0;
+            }
+            maze->cells[row][col] = (char)ch;
         }
         ch = fgetc(file);
+        if (ch != '\n' && ch != EOF) {
+            fclose(file);
+            return 0;
+        }
     }
     fclose(file);
     return 1;
