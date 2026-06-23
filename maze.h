@@ -28,5 +28,7 @@ void player_traverse(const Maze *maze);
 
 void solve_dfs(const Maze *maze);
 void solve_bfs(const Maze *maze);
+void solve_astar(const Maze *maze);
+void solve_wall_follower(const Maze *maze);
 
 #endif
