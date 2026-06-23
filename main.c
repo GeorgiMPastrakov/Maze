@@ -26,6 +26,12 @@ static int prompt_int(const char *label) {
     return atoi(line);
 }
 
+static void pause_enter(void) {
+    char line[64];
+    printf("Press Enter to continue...");
+    read_line(line, sizeof line);
+}
+
 static void print_menu(void) {
     printf("\n=== Maze ===\n");
     printf("1. Generate maze\n");
@@ -53,6 +59,7 @@ static void handle_generate(Maze *maze, int *has_maze) {
     *has_maze = 1;
     clear_screen();
     draw_maze(maze);
+    pause_enter();
 }
 
 static void handle_solve(const Maze *maze) {
@@ -62,6 +69,7 @@ static void handle_solve(const Maze *maze) {
     } else {
         solve_dfs(maze);
     }
+    pause_enter();
 }
 
 static void handle_load(Maze *maze, int *has_maze) {
@@ -71,6 +79,7 @@ static void handle_load(Maze *maze, int *has_maze) {
         *has_maze = 1;
         clear_screen();
         draw_maze(maze);
+        pause_enter();
     } else {
         printf("Could not read a valid maze from that file\n");
     }
@@ -115,6 +124,7 @@ int main(void) {
             case 4:
                 if (has_maze) {
                     player_traverse(&maze);
+                    pause_enter();
                 } else {
                     printf("Generate or load a maze first\n");
                 }
