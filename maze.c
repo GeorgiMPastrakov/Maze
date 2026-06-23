@@ -30,6 +30,8 @@ void draw_maze_marked(const Maze *maze, int row, int col, char glyph) {
         for (c = 0; c < maze->width; c++) {
             if (r == row && c == col) {
                 putchar(glyph);
+            } else if (r == maze->height - 1 && c == maze->width - 1) {
+                putchar('E');
             } else {
                 putchar(maze->cells[r][c]);
             }
