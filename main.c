@@ -56,6 +56,7 @@ static void handle_generate(Maze *maze, int *has_maze) {
     int height = prompt_int("Height (3-30): ");
     int exit_row = prompt_int("Exit row (-1 = bottom-right corner): ");
     int exit_col = prompt_int("Exit col (-1 = bottom-right corner): ");
+    int extra_paths = prompt_int("Extra paths (0 = single solution): ");
     int seed = prompt_int("Seed (0 = random): ");
     if (exit_row < 0) {
         exit_row = height - 1;
@@ -63,7 +64,8 @@ static void handle_generate(Maze *maze, int *has_maze) {
     if (exit_col < 0) {
         exit_col = width - 1;
     }
-    generate_maze(maze, width, height, exit_row, exit_col, (unsigned)seed);
+    generate_maze(maze, width, height, exit_row, exit_col, extra_paths,
+                  (unsigned)seed);
     *has_maze = 1;
     clear_screen();
     draw_maze(maze);

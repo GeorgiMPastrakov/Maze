@@ -81,8 +81,50 @@ static void set_exit(Maze *maze, int exit_row, int exit_col) {
     maze->cells[row][col] = EMPTY;
 }
 
+static void add_loops(Maze *maze, int count, Rng *rng) {
+    int candidate_row[MAZE_MAX_H * MAZE_MAX_W];
+    int candidate_col[MAZE_MAX_H * MAZE_MAX_W];
+    int total = 0;
+    int row, col, i;
+    for (row = 0; row < maze->height; row++) {
+        for (col = 0; col < maze->width; col++) {
+            if (maze->cells[row][col] != WALL) {
+                continue;
+            }
+            if (row % 2 == 0 && col % 2 == 1 && col + 1 < maze->width &&
+                maze->cells[row][col - 1] == EMPTY &&
+                maze->cells[row][col + 1] == EMPTY) {
+                candidate_row[total] = row;
+                candidate_col[total] = col;
+                total++;
+            } else if (row % 2 == 1 && col % 2 == 0 && row + 1 < maze->height &&
+                       maze->cells[row - 1][col] == EMPTY &&
+                       maze->cells[row + 1][col] == EMPTY) {
+                candidate_row[total] = row;
+                candidate_col[total] = col;
+                total++;
+            }
+        }
+    }
+    for (i = total - 1; i > 0; i--) {
+        int j = rng_range(rng, i + 1);
+        int temp_row = candidate_row[i];
+        int temp_col = candidate_col[i];
+        candidate_row[i] = candidate_row[j];
+        candidate_col[i] = candidate_col[j];
+        candidate_row[j] = temp_row;
+        candidate_col[j] = temp_col;
+    }
+    if (count > total) {
+        count = total;
+    }
+    for (i = 0; i < count; i++) {
+        maze->cells[candidate_row[i]][candidate_col[i]] = EMPTY;
+    }
+}
+
 void generate_maze(Maze *maze, int width, int height,
-                   int exit_row, int exit_col, unsigned seed) {
+                   int exit_row, int exit_col, int extra_paths, unsigned seed) {
     Rng rng;
     rng.state = seed != 0u ? seed : (unsigned)time(NULL);
     maze->width = clamp(width, MAZE_MIN, MAZE_MAX_W);
@@ -93,4 +135,7 @@ void generate_maze(Maze *maze, int width, int height,
     carve(maze, 0, 0, &rng);
     maze->cells[0][0] = EMPTY;
     set_exit(maze, exit_row, exit_col);
+    if (extra_paths > 0) {
+        add_loops(maze, extra_paths, &rng);
+    }
 }

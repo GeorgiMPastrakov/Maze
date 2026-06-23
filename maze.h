@@ -24,7 +24,7 @@ void draw_maze_marked(const Maze *maze, int row, int col, char glyph);
 void clear_screen(void);
 
 void generate_maze(Maze *maze, int width, int height,
-                   int exit_row, int exit_col, unsigned seed);
+                   int exit_row, int exit_col, int extra_paths, unsigned seed);
 
 int write_maze(const Maze *maze, const char *filename);
 int read_maze(Maze *maze, const char *filename);
