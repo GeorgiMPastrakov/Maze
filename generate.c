@@ -51,20 +51,6 @@ static void carve(Maze *maze, int row, int col, Rng *rng) {
     }
 }
 
-static void open_exit(Maze *maze) {
-    int last_row = maze->height - 1;
-    int last_col = maze->width - 1;
-    int even_row = (last_row % 2 == 0) ? last_row : last_row - 1;
-    int even_col = (last_col % 2 == 0) ? last_col : last_col - 1;
-    int row, col;
-    for (col = even_col; col <= last_col; col++) {
-        maze->cells[even_row][col] = EMPTY;
-    }
-    for (row = even_row; row <= last_row; row++) {
-        maze->cells[row][last_col] = EMPTY;
-    }
-}
-
 static int clamp(int value, int low, int high) {
     if (value < low) {
         return low;
@@ -75,13 +61,36 @@ static int clamp(int value, int low, int high) {
     return value;
 }
 
-void generate_maze(Maze *maze, int width, int height, unsigned seed) {
+static int snap_to_room(int value, int limit) {
+    int snapped = clamp(value, 0, limit - 1);
+    if (snapped % 2 != 0) {
+        snapped = (snapped + 1 < limit) ? snapped + 1 : snapped - 1;
+    }
+    return snapped;
+}
+
+static void set_exit(Maze *maze, int exit_row, int exit_col) {
+    int row = snap_to_room(exit_row, maze->height);
+    int col = snap_to_room(exit_col, maze->width);
+    if (row == maze->start_row && col == maze->start_col) {
+        row = snap_to_room(maze->height - 1, maze->height);
+        col = snap_to_room(maze->width - 1, maze->width);
+    }
+    maze->goal_row = row;
+    maze->goal_col = col;
+    maze->cells[row][col] = EMPTY;
+}
+
+void generate_maze(Maze *maze, int width, int height,
+                   int exit_row, int exit_col, unsigned seed) {
     Rng rng;
     rng.state = seed != 0u ? seed : (unsigned)time(NULL);
     maze->width = clamp(width, MAZE_MIN, MAZE_MAX_W);
     maze->height = clamp(height, MAZE_MIN, MAZE_MAX_H);
+    maze->start_row = 0;
+    maze->start_col = 0;
     fill_walls(maze);
     carve(maze, 0, 0, &rng);
     maze->cells[0][0] = EMPTY;
-    open_exit(maze);
+    set_exit(maze, exit_row, exit_col);
 }

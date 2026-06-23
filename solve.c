@@ -45,9 +45,9 @@ static void render(const Maze *maze, char mark[MAZE_MAX_H][MAZE_MAX_W],
         for (col = 0; col < maze->width; col++) {
             if (row == current_row && col == current_col) {
                 printf(COLOR_YELLOW "@" COLOR_RESET);
-            } else if (row == 0 && col == 0) {
+            } else if (row == maze->start_row && col == maze->start_col) {
                 printf(COLOR_GREEN "S" COLOR_RESET);
-            } else if (row == maze->height - 1 && col == maze->width - 1) {
+            } else if (row == maze->goal_row && col == maze->goal_col) {
                 printf(COLOR_RED "E" COLOR_RESET);
             } else if (mark[row][col] == 'P') {
                 printf(COLOR_GREEN "o" COLOR_RESET);
@@ -114,7 +114,7 @@ static SolveStats run_dfs(const Maze *maze, int animate) {
         if (animate) {
             render(maze, mark, row, col);
         }
-        if (row == maze->height - 1 && col == maze->width - 1) {
+        if (row == maze->goal_row && col == maze->goal_col) {
             stats.found = 1;
             break;
         }
@@ -136,9 +136,9 @@ static SolveStats run_dfs(const Maze *maze, int animate) {
     }
     if (stats.found) {
         trace_path(mark, parent_row, parent_col,
-                   maze->height - 1, maze->width - 1, &stats);
+                   maze->goal_row, maze->goal_col, &stats);
         if (animate) {
-            render(maze, mark, maze->height - 1, maze->width - 1);
+            render(maze, mark, maze->goal_row, maze->goal_col);
         }
     }
     return stats;
@@ -172,7 +172,7 @@ static SolveStats run_bfs(const Maze *maze, int animate) {
         if (animate) {
             render(maze, mark, row, col);
         }
-        if (row == maze->height - 1 && col == maze->width - 1) {
+        if (row == maze->goal_row && col == maze->goal_col) {
             stats.found = 1;
             break;
         }
@@ -194,9 +194,9 @@ static SolveStats run_bfs(const Maze *maze, int animate) {
     }
     if (stats.found) {
         trace_path(mark, parent_row, parent_col,
-                   maze->height - 1, maze->width - 1, &stats);
+                   maze->goal_row, maze->goal_col, &stats);
         if (animate) {
-            render(maze, mark, maze->height - 1, maze->width - 1);
+            render(maze, mark, maze->goal_row, maze->goal_col);
         }
     }
     return stats;
@@ -209,8 +209,8 @@ static SolveStats run_astar(const Maze *maze, int animate) {
     int gscore[MAZE_MAX_H][MAZE_MAX_W];
     int parent_row[MAZE_MAX_H][MAZE_MAX_W];
     int parent_col[MAZE_MAX_H][MAZE_MAX_W];
-    int goal_row = maze->height - 1;
-    int goal_col = maze->width - 1;
+    int goal_row = maze->goal_row;
+    int goal_col = maze->goal_col;
     int row, col, i;
     SolveStats stats = {0, 0, 0};
     memset(mark, 0, sizeof mark);
@@ -295,8 +295,8 @@ static SolveStats run_wall_follower(const Maze *maze, int animate) {
     int row = 0;
     int col = 0;
     int facing = 2;
-    int goal_row = maze->height - 1;
-    int goal_col = maze->width - 1;
+    int goal_row = maze->goal_row;
+    int goal_col = maze->goal_col;
     int budget = maze->width * maze->height * 8;
     SolveStats stats = {0, 0, 0};
     memset(mark, 0, sizeof mark);

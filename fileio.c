@@ -3,7 +3,7 @@
 
 int read_maze(Maze *maze, const char *filename) {
     FILE *file;
-    int width, height, row, col, ch;
+    int width, height, goal_row, goal_col, row, col, ch;
     if (maze == NULL || filename == NULL) {
         return 0;
     }
@@ -11,7 +11,7 @@ int read_maze(Maze *maze, const char *filename) {
     if (file == NULL) {
         return 0;
     }
-    if (fscanf(file, "%d %d", &width, &height) != 2) {
+    if (fscanf(file, "%d %d %d %d", &width, &height, &goal_row, &goal_col) != 4) {
         fclose(file);
         return 0;
     }
@@ -20,11 +20,20 @@ int read_maze(Maze *maze, const char *filename) {
         fclose(file);
         return 0;
     }
+    if (goal_row < 0 || goal_row >= height ||
+        goal_col < 0 || goal_col >= width) {
+        fclose(file);
+        return 0;
+    }
     while ((ch = fgetc(file)) != '\n' && ch != EOF) {
     }
     fill_walls(maze);
     maze->width = width;
     maze->height = height;
+    maze->start_row = 0;
+    maze->start_col = 0;
+    maze->goal_row = goal_row;
+    maze->goal_col = goal_col;
     for (row = 0; row < height; row++) {
         for (col = 0; col < width; col++) {
             ch = fgetc(file);
@@ -54,7 +63,8 @@ int write_maze(const Maze *maze, const char *filename) {
     if (file == NULL) {
         return 0;
     }
-    if (fprintf(file, "%d %d\n", maze->width, maze->height) < 0) {
+    if (fprintf(file, "%d %d %d %d\n", maze->width, maze->height,
+                maze->goal_row, maze->goal_col) < 0) {
         fclose(file);
         return 0;
     }

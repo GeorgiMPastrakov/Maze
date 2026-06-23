@@ -2,8 +2,8 @@
 #include "maze.h"
 
 void player_traverse(const Maze *maze) {
-    int row = 0;
-    int col = 0;
+    int row = maze->start_row;
+    int col = maze->start_col;
     char line[64];
     while (1) {
         clear_screen();
@@ -38,7 +38,7 @@ void player_traverse(const Maze *maze) {
             row = next_row;
             col = next_col;
         }
-        if (row == maze->height - 1 && col == maze->width - 1) {
+        if (row == maze->goal_row && col == maze->goal_col) {
             clear_screen();
             draw_maze_marked(maze, row, col, '@');
             printf("You reached the goal!\n");

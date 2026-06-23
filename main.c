@@ -54,8 +54,16 @@ static int read_choice(void) {
 static void handle_generate(Maze *maze, int *has_maze) {
     int width = prompt_int("Width (3-40): ");
     int height = prompt_int("Height (3-30): ");
+    int exit_row = prompt_int("Exit row (-1 = bottom-right corner): ");
+    int exit_col = prompt_int("Exit col (-1 = bottom-right corner): ");
     int seed = prompt_int("Seed (0 = random): ");
-    generate_maze(maze, width, height, (unsigned)seed);
+    if (exit_row < 0) {
+        exit_row = height - 1;
+    }
+    if (exit_col < 0) {
+        exit_col = width - 1;
+    }
+    generate_maze(maze, width, height, exit_row, exit_col, (unsigned)seed);
     *has_maze = 1;
     clear_screen();
     draw_maze(maze);

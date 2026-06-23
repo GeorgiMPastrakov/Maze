@@ -11,6 +11,10 @@
 typedef struct {
     int width;
     int height;
+    int start_row;
+    int start_col;
+    int goal_row;
+    int goal_col;
     char cells[MAZE_MAX_H][MAZE_MAX_W];
 } Maze;
 
@@ -19,7 +23,8 @@ void draw_maze(const Maze *maze);
 void draw_maze_marked(const Maze *maze, int row, int col, char glyph);
 void clear_screen(void);
 
-void generate_maze(Maze *maze, int width, int height, unsigned seed);
+void generate_maze(Maze *maze, int width, int height,
+                   int exit_row, int exit_col, unsigned seed);
 
 int write_maze(const Maze *maze, const char *filename);
 int read_maze(Maze *maze, const char *filename);
