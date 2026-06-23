@@ -63,9 +63,22 @@ A plain-text file: a `width height` header line, followed by `height` rows of
 
 ### Computer solving
 
-The computer implements **at least two** maze-solving algorithms (e.g. depth-
-first search and breadth-first search / wall follower) and animates its progress
-through the maze, pausing briefly between steps.
+The computer offers four maze-solving algorithms and animates each one step by
+step, so you can watch how it explores:
+
+- **Depth-first search** — dives deep along one direction, backtracking at
+  dead ends.
+- **Breadth-first search** — expands evenly in all directions and finds a
+  shortest path.
+- **A\*** — guided search using a Manhattan-distance heuristic; finds a shortest
+  path while exploring fewer cells than BFS.
+- **Right-hand wall follower** — keeps its right hand on the wall and walks until
+  it reaches the goal.
+
+During the animation the start is `S`, the goal is `E`, the current cell is `@`,
+explored cells fade out, the frontier is `+`, and the final path is drawn with
+`o`. A comparison mode runs all four and prints how many cells each explored and
+how long its path was.
 
 ## Build & run
 
