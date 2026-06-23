@@ -38,5 +38,11 @@ void player_traverse(const Maze *maze) {
             row = next_row;
             col = next_col;
         }
+        if (row == maze->height - 1 && col == maze->width - 1) {
+            clear_screen();
+            draw_maze_marked(maze, row, col, '@');
+            printf("You reached the goal!\n");
+            return;
+        }
     }
 }
