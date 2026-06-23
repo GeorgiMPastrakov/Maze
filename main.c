@@ -70,12 +70,21 @@ static void handle_load(Maze *maze, int *has_maze) {
 static void handle_save(const Maze *maze, int has_maze) {
     char name[256];
     prompt_string("Filename: ", name, sizeof name);
+    if (!has_maze) {
+        FILE *file = fopen(name, "w");
+        if (file == NULL) {
+            printf("Could not open that file\n");
+            return;
+        }
+        fclose(file);
+        printf("No maze generated yet; wrote an empty file\n");
+        return;
+    }
     if (write_maze(maze, name)) {
         printf("Maze saved\n");
     } else {
         printf("Could not write to that file\n");
     }
-    (void)has_maze;
 }
 
 int main(void) {
