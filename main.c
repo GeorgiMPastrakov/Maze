@@ -104,6 +104,11 @@ int main(void) {
                 handle_save(&maze, has_maze);
                 break;
             case 4:
+                if (has_maze) {
+                    player_traverse(&maze);
+                } else {
+                    printf("Generate or load a maze first\n");
+                }
                 break;
             case 5:
                 break;
