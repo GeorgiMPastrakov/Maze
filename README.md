@@ -86,5 +86,3 @@ make
 | Player traversal               | `traverse.c`       |
 | Computer solving               | `solve.c`          |
 | Menu / entry point             | `main.c`           |
-
-See [AGENTS.md](AGENTS.md) for contributor rules and the shared data contract.
